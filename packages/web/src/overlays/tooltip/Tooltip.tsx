@@ -23,8 +23,6 @@ export const Tooltip = ({
   tooltipId: tooltipIdDefault,
   visible,
   invertColorScheme = true,
-  disableFocusTrap,
-  disableAutoFocus,
   disableTypeFocus,
   focusTabIndexElements,
   respectNegativeTabIndex,
@@ -44,6 +42,22 @@ export const Tooltip = ({
       }
     },
     [handleOnMouseEnter],
+  );
+
+  const handleBlur = useCallback(
+    (event?: React.FocusEvent) => {
+      const relatedTarget = event?.relatedTarget as Node | null;
+      const tooltipContent = tooltipContentRef.current;
+
+      // Don't trigger blur if focus is moving to an element inside the tooltip content
+      // This prevents the tooltip from closing when focus moves to interactive elements (links, buttons) inside it
+      if (relatedTarget && tooltipContent?.contains(relatedTarget)) {
+        return;
+      }
+
+      handleOnBlur();
+    },
+    [handleOnBlur],
   );
 
   const clonedChild = useMemo(() => {
@@ -77,13 +91,11 @@ export const Tooltip = ({
         />
       }
       contentPosition={contentPosition}
-      disableAutoFocus={disableAutoFocus}
-      disableFocusTrap={disableFocusTrap}
       disablePortal={disablePortal}
       disableTypeFocus={disableTypeFocus}
       focusTabIndexElements={focusTabIndexElements}
       invertColorScheme={invertColorScheme}
-      onBlur={handleOnBlur}
+      onBlur={handleBlur}
       onFocus={handleOnFocus}
       onMouseDown={preventMouseDown}
       onMouseEnter={handleMouseEnter}

@@ -38,7 +38,9 @@ function TooltipPosition() {
     <VStack gap={2}>
       <Box position="relative">
         Set your default display currency.
-        <Tooltip content="I am not centered horizontally">
+        <Tooltip content={
+          <Text>I am not centered horizontally<a href="https://www.google.com">Google</a></Text>
+        }>
           <Icon active color="fg" name="info" paddingStart={1} position="absolute" tabIndex={0} />
         </Tooltip>
       </Box>
